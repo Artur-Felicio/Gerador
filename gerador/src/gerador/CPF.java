@@ -7,7 +7,7 @@ public class CPF extends aleatorio implements Comuns{
 	public CPF(int pFim) {
 		super(pFim);
 		this.ponto = false;		
-	}
+	} 
 	
 	public void setPonto(boolean pPonto)
 	{

@@ -5,3 +5,4 @@ public interface Comuns {
 	boolean Validar(String pDado);
 	public void setPonto(boolean pPonto);
 }
+ 

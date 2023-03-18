@@ -3,7 +3,7 @@ package gerador;
 public class CNPJ extends aleatorio implements Comuns{
 
 	private boolean ponto = false; //falso sem pontuação, verdadeiro com pontuação
-	
+	 
 	public CNPJ(int pFim) {
 		super(pFim);
 		this.ponto = false;		

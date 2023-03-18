@@ -19,7 +19,7 @@ public class TelaCadastro extends JFrame {
     private JButton ValidarButton;
     private JButton ComandoGerar;
     private JButton ComandoValidar;
-    
+     
     public TelaCadastro() {
         setTitle("Gerador de CPF/CNPJ");
         setSize(300, 350);

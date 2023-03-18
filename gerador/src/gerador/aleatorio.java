@@ -8,7 +8,7 @@ public class aleatorio {
 	
 	protected aleatorio(int pFim)
 	{
-		this.Fim = pFim;		 
+		this.Fim = pFim; 		 
 	}
 	
 	protected long gerarAleatoriedade()
