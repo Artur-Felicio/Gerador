@@ -127,6 +127,18 @@ public class TelaCadastro extends JFrame {
             		if((dado.length()!=11) && (Tipo.getSelectedItem().toString() == "CPF"))
             			throw new Exception("Não deve possuir mais ou menos de 11 digitos núméricos");
             		
+            		char primeiro = dado.charAt(0);
+            	    for (int i = 1; i < dado.length(); i++) {
+            	        if (dado.charAt(i) != primeiro) {
+            	        	validacao = 2;
+            	        }
+            	    }
+            	    
+            	    if(validacao == 1)
+            	    	throw new Exception("Informação indicada possui todos os digitos iguais");
+            	    
+            	    validacao = 1;
+            	    
             		if(Tipo.getSelectedItem().toString() == "CPF")
             		{
             			CPF pCPF = new CPF(0);
