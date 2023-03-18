@@ -15,6 +15,7 @@ public class TelaCadastro extends JFrame {
     private JTextField VerdadeiroFalso;
     private JComboBox<String> pontuacaoComboBox;    
     private JComboBox<String> Tipo;
+    private JComboBox<String> Gerados;
     private JButton gerarButton;
     private JButton ValidarButton;
     private JButton ComandoGerar;
@@ -22,7 +23,7 @@ public class TelaCadastro extends JFrame {
      
     public TelaCadastro() {
         setTitle("Gerador de CPF/CNPJ");
-        setSize(300, 350);
+        setSize(300, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -50,6 +51,8 @@ public class TelaCadastro extends JFrame {
         Tipo.setBounds(50, 100, 200, 25);
         add(Tipo);
         
+        
+        
         cpfTextField = new JTextField();
         cpfTextField.setBounds(50, 150, 200, 25);
         cpfTextField.setEditable(false);
@@ -74,15 +77,21 @@ public class TelaCadastro extends JFrame {
         add(pontuacaoComboBox);
         
         gerarButton = new JButton("Gerar");
-        gerarButton.setBounds(50, 250, 200, 25);
+        gerarButton.setBounds(50, 300, 200, 25);
         gerarButton.setVisible(true);
         add(gerarButton);    
         
         ValidarButton = new JButton("Validar");
-        ValidarButton.setBounds(50, 250, 200, 25);
+        ValidarButton.setBounds(50, 300, 200, 25);
         ValidarButton.setVisible(true);
-        add(ValidarButton);    
+        add(ValidarButton);  
         
+        List<String> lGerados = new ArrayList<String>();
+        lGerados.add("Dados Gerados");
+        String[] pGerados = lGerados.toArray(new String[lGerados.size()]);
+        Gerados = new JComboBox<String>(pGerados);
+        Gerados.setBounds(50, 250, 200, 25);
+        add(Gerados);
         
         ValidarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -90,21 +99,33 @@ public class TelaCadastro extends JFrame {
             	
             	VerdadeiroFalso.setForeground(Color.RED);
             	String dado =  cpfTextField.getText();
-            	dado = dado.replace(".", "").replace("-", "").replace("/", "");
-            	int validacao = 0;
+            	
+            	int validacao = 1;
             	
             	try {
             		
+            		if((dado.length()!= 11 && (Tipo.getSelectedItem().toString() == "CPF"))||(dado.length()!= 14 && (Tipo.getSelectedItem().toString() == "CNPJ")))
+            		{
+            			if((Tipo.getSelectedItem().toString() == "CPF") && !dado.matches("\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}"))
+            				throw new Exception("O CPF não segue o formato com pontuação, sendo ela: nnn.nnn.nnn-nn, sendo o n um numero de 0 a 9");
+            			if((Tipo.getSelectedItem().toString() == "CNPJ") && !dado.matches("\\d{2}\\.\\d{3}\\.\\d{3}/\\d{4}-\\d{2}"))
+                			throw new Exception("O CPF não segue o formato com pontuação, sendo ela: nn.nnn.nnn/nnnn-nn, sendo o n um numero de 0 a 9");
+            		}
+            		
+            		
+            		validacao = 0;
+            		
+            		dado = dado.replace(".", "").replace("-", "").replace("/", "");
             		
             		Double.parseDouble(dado);
             		
             		validacao = 1;
             		
             		if((dado.length()!=14) && (Tipo.getSelectedItem().toString() == "CNPJ"))
-            			throw new Exception("Não deve possuir mais ou menos de 14 digitos");
+            			throw new Exception("Não deve possuir mais ou menos de 14 digitos núméricos");
             		
             		if((dado.length()!=11) && (Tipo.getSelectedItem().toString() == "CPF"))
-            			throw new Exception("Não deve possuir mais ou menos de 11 digitos");
+            			throw new Exception("Não deve possuir mais ou menos de 11 digitos núméricos");
             		
             		if(Tipo.getSelectedItem().toString() == "CPF")
             		{
@@ -128,6 +149,18 @@ public class TelaCadastro extends JFrame {
             }
         });
         
+        Gerados.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // código a ser executado quando o botão Gerar for clicado
+            	
+            	if(Gerados.getSelectedItem().toString() != "Dados Gerados")
+            	{
+	            	cpfTextField.setText(Gerados.getSelectedItem().toString());
+	            	VerdadeiroFalso.setText("");
+            	}
+            }
+        });
+        
         gerarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // código a ser executado quando o botão Gerar for clicado
@@ -135,12 +168,15 @@ public class TelaCadastro extends JFrame {
             	if(Tipo.getSelectedItem().toString() == "CNPJ")
             	{
             		CNPJ info = new CNPJ(0);            		
-            		saida(info);
+            		saida(info, lGerados);
             	}
             	else {
             		CPF info = new CPF(0);
-            		saida(info);
+            		saida(info,lGerados);
 				}
+            	
+            	
+                
             }
         });
         
@@ -149,7 +185,8 @@ public class TelaCadastro extends JFrame {
             		gerarButton.setVisible(true);
             		ValidarButton.setVisible(false);
             		pontuacaoComboBox.setVisible(true);            		
-            		VerdadeiroFalso.setVisible(false);  
+            		VerdadeiroFalso.setVisible(false);
+            		Gerados.setVisible(true);
             		cpfTextField.setEditable(false);
             		VerdadeiroFalso.setText("");
             }
@@ -163,6 +200,7 @@ public class TelaCadastro extends JFrame {
             		VerdadeiroFalso.setVisible(true);
             		cpfTextField.setEditable(true);
             		VerdadeiroFalso.setText("");
+            		Gerados.setVisible(true);            		
             }
         });
         
@@ -183,18 +221,21 @@ public class TelaCadastro extends JFrame {
     {
     	if(pStatus) {
     		VerdadeiroFalso.setText("Verdadeiro");
-    		VerdadeiroFalso.setForeground(new Color(0, 100, 0));
+    		VerdadeiroFalso.setForeground(new Color(0, 100, 0));    		
     	}
     	else
     		VerdadeiroFalso.setText("Falso");
+    	
     }
     
-    private void saida(Comuns documento) {
+    private void saida(Comuns documento, List<String> lGerados) {
         boolean ponto = false;
         if(pontuacaoComboBox.getSelectedItem().toString() == "Sim")
             ponto = true;
         documento.setPonto(ponto);
         cpfTextField.setText(documento.Gerar());
+        
+        Gerados.addItem(cpfTextField.getText());
     }
 
 }
